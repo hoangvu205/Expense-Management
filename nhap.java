@@ -1,6 +1,5 @@
 import javax.swing.*;
 
-
 public class nhap{
     public static void main(String[] args) {
         JFrame windown=new JFrame("cua so app");
@@ -9,7 +8,6 @@ public class nhap{
         JButton view=new JButton("view");
         windown.setLayout(null);
         JButton chuyen=new JButton("chuyen");
-        chuyen.setBounds(2,2,220,20);
         windown.add(chuyen);
         windown.setVisible(true);
     }
