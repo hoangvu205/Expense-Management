@@ -8,6 +8,7 @@ public class nhap{
         JButton view=new JButton("view");
         windown.setLayout(null);
         JButton chuyen=new JButton("chuyen");
+        chuyen.setBounds(2,2,300,20);
         windown.add(chuyen);
         windown.setVisible(true);
     }
