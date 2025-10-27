@@ -25,7 +25,7 @@ public class GiaoDich {
     }
     
     public String toString(){
-        return String.format("%s %f %s %s %s",moTa,soTien,ngay,danhMuc,ghiChu);
+        return String.format("%s\n%f\n%s\n%s\n%s",moTa,soTien,ngay,danhMuc,ghiChu);
     }
 
     // Getter và Setter

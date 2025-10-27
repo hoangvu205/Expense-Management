@@ -15,6 +15,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.DecimalFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
@@ -62,9 +63,9 @@ public class App extends JFrame {
                 PrintWriter pw = null;
                 try {
 //                    Scanner fr=new Scanner(new File("data/dataCaNhan/data.txt"));
-                    pw = new PrintWriter(new FileWriter("data/dataCaNhan/data.txt"));
+                    pw = new PrintWriter(new FileWriter("data/dataCaNhan/dataCaNhan.txt"));
                     for(GiaoDich i:danhSachGiaoDichCaNhan){
-                        System.out.println(i);
+//                        System.out.println(i);
                         pw.println(i);
                     }
                 } catch (IOException ex) {
@@ -82,6 +83,28 @@ public class App extends JFrame {
         vonDauTuTong = 0;
         dinhDangTienTe = new DecimalFormat("#,###.##");
         dinhDangNgay = new SimpleDateFormat("dd/MM/yyyy");
+        try {
+            Scanner cinf=new Scanner(new File("data/dataCaNhan/dataCaNhan.txt"));
+//            if(cinf.hasNextLine()){
+//                System.out.println(cinf.nextLine()+"_ok");
+//            }
+            SimpleDateFormat fm=new SimpleDateFormat("EEE MMM dd HH:mm:ss 'GMT'XXX yyyy", java.util.Locale.ENGLISH);
+            while(cinf.hasNextLine()){
+                String moTa=cinf.nextLine();
+                double tien=cinf.nextDouble();cinf.nextLine();
+                String ngayStr=cinf.nextLine();
+                String danhMuc=cinf.nextLine();
+                String ghiChu=cinf.nextLine();
+                Date newNgay=fm.parse(ngayStr);
+                danhSachGiaoDichCaNhan.add(new GiaoDich(moTa,tien,newNgay,danhMuc,ghiChu));
+            }
+
+        } catch (FileNotFoundException ex) {
+            System.getLogger(App.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+        }
+        catch (ParseException ex) {
+            System.getLogger(App.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+        }
     }
 
     private void khoiTaoGiaoDien() {
