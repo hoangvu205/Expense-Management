@@ -42,6 +42,7 @@ public class App extends JFrame {
     // Formatters
     private DecimalFormat dinhDangTienTe;
     private SimpleDateFormat dinhDangNgay;
+    private SimpleDateFormat fm=new SimpleDateFormat("EEE MMM dd HH:mm:ss 'GMT'XXX yyyy", java.util.Locale.ENGLISH);
 
     public App() {
         super("Quản lý Chi tiêu Cá nhân & Kinh doanh");
@@ -85,10 +86,6 @@ public class App extends JFrame {
         dinhDangNgay = new SimpleDateFormat("dd/MM/yyyy");
         try {
             Scanner cinf=new Scanner(new File("data/dataCaNhan/dataCaNhan.txt"));
-//            if(cinf.hasNextLine()){
-//                System.out.println(cinf.nextLine()+"_ok");
-//            }
-            SimpleDateFormat fm=new SimpleDateFormat("EEE MMM dd HH:mm:ss 'GMT'XXX yyyy", java.util.Locale.ENGLISH);
             while(cinf.hasNextLine()){
                 String moTa=cinf.nextLine();
                 double tien=cinf.nextDouble();cinf.nextLine();
