@@ -61,7 +61,7 @@ public class App extends JFrame {
     private void dongApp(){
         addWindowListener(new WindowAdapter(){
             public void windowClosing(WindowEvent e){
-                PrintWriter pw = null;
+                PrintWriter pw = null,pw2=null;
                 try {
 //                    Scanner fr=new Scanner(new File("data/dataCaNhan/data.txt"));
                     pw = new PrintWriter(new FileWriter("data/dataCaNhan/dataCaNhan.txt"));
@@ -69,10 +69,14 @@ public class App extends JFrame {
 //                        System.out.println(i);
                         pw.println(i);
                     }
-                } catch (IOException ex) {
-                    
-                } finally {
+                    pw2=new PrintWriter(new FileWriter("data/dataCaNhan/dataKinhDoanh.txt"));
+                    for(DuAnKinhDoanh duAn:danhSachDuAnKinhDoanh){
+                        pw2.println(duAn);
+                    }
+                } catch (IOException ex) {}
+                finally{
                     pw.close();
+                    pw2.close();
                 }
             }
         });
@@ -95,13 +99,20 @@ public class App extends JFrame {
                 Date newNgay=fm.parse(ngayStr);
                 danhSachGiaoDichCaNhan.add(new GiaoDich(moTa,tien,newNgay,danhMuc,ghiChu));
             }
-
-        } catch (FileNotFoundException ex) {
+            cinf=new Scanner(new File("data/dataCaNhan/dataKinhDoanh.txt"));
+            while(cinf.hasNextLine()){
+                String name=cinf.nextLine();
+                double tien1=cinf.nextDouble(),tien2=cinf.nextDouble(),tien3=cinf.nextDouble();
+                if(cinf.hasNextLine()) cinf.nextLine();
+                danhSachDuAnKinhDoanh.add(new DuAnKinhDoanh(name,tien1,tien2,tien3));
+            }
+        }catch (FileNotFoundException ex) {
             System.getLogger(App.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
         }
         catch (ParseException ex) {
             System.getLogger(App.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
         }
+        
     }
 
     private void khoiTaoGiaoDien() {
@@ -754,7 +765,6 @@ public class App extends JFrame {
 
     private void themVonDauTuMoi() {
         boolean nhapLieuThanhCong = false;
-
         while (!nhapLieuThanhCong) {
             JTextField txtMoTa = new JTextField();
             JTextField txtSoTien = new JTextField();
@@ -1061,7 +1071,7 @@ public class App extends JFrame {
                     }
 
                     duAn.themGiaoDich(moTa, soTien, ngay, ghiChu);
-
+                    System.out.println("check----------------------------------------------------");
                     capNhatToanBoGiaoDien();
                     JOptionPane.showMessageDialog(this, "Thêm giao dịch dự án thành công!");
                     nhapLieuThanhCong = true;
@@ -1118,9 +1128,3 @@ public class App extends JFrame {
         });
     }
 }
-
-
-
-// Lớp Dự án Kinh doanh
-
-// Lớp Panel Biểu đồ

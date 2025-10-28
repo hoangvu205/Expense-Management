@@ -18,6 +18,10 @@ public class DuAnKinhDoanh {
         this.mucTieuLoiNhuan = mucTieuLoiNhuan;
         this.danhSachGiaoDich = new ArrayList<>();
     }
+    
+    public String toString(){
+        return String.format("%s\n%f\n%f\n%f",tenDuAn,vonDauTu,chiPhiDuKien,mucTieuLoiNhuan);
+    }
 
     public void themGiaoDich(String moTa, double soTien, Date ngay, String ghiChu) {
         String danhMuc = soTien >= 0 ? "Thu nhập dự án" : "Chi phí dự án";
