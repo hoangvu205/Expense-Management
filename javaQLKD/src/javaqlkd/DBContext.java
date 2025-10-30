@@ -7,7 +7,7 @@ import java.sql.SQLException;
 public class DBContext {
     private final String serverName = "localhost";
     private final String portNumber = "1433";
-    private final String dbName = "temp";
+    private final String dbName = "dataCaNhan";
     private final String userID = "sa";
     private final String password = "123";
     public Connection getConnection() throws SQLException {

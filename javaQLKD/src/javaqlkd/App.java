@@ -14,12 +14,12 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
-
 // Lớp chính của ứng dụng
 public class App extends JFrame {
     private JTabbedPane tabbedPane;
@@ -43,7 +43,10 @@ public class App extends JFrame {
     private DecimalFormat dinhDangTienTe;
     private SimpleDateFormat dinhDangNgay;
     private SimpleDateFormat fm=new SimpleDateFormat("EEE MMM dd HH:mm:ss 'GMT'XXX yyyy", java.util.Locale.ENGLISH);
-
+    private SimpleDateFormat fm2=new SimpleDateFormat("yyyy-MM-dd",java.util.Locale.ENGLISH);
+    private DBContext db;
+    private java.sql.Connection conn;
+    private java.sql.Statement stt;
     public App() {
         super("Quản lý Chi tiêu Cá nhân & Kinh doanh");
 
@@ -61,22 +64,22 @@ public class App extends JFrame {
     private void dongApp(){
         addWindowListener(new WindowAdapter(){
             public void windowClosing(WindowEvent e){
-                PrintWriter pw = null,pw2=null;
                 try {
-//                    Scanner fr=new Scanner(new File("data/dataCaNhan/data.txt"));
-                    pw = new PrintWriter(new FileWriter("data/dataCaNhan/dataCaNhan.txt"));
-                    for(GiaoDich i:danhSachGiaoDichCaNhan){
-//                        System.out.println(i);
-                        pw.println(i);
+                    String sq="";
+                    sq+="delete from [giao dich]\n";
+                    for(GiaoDich gd:danhSachGiaoDichCaNhan){
+                        sq+=String.format("insert into[giao dich] values(N'%s',%f,'%s',N'%s',N'%s')\n" ,gd.getMoTa(),
+                                        gd.getSoTien(),
+                                        new java.sql.Date(gd.getNgay().getTime()),
+                                        gd.getDanhMuc(),
+                                        gd.getGhiChu());
                     }
-                    pw2=new PrintWriter(new FileWriter("data/dataCaNhan/dataKinhDoanh.txt"));
-                    for(DuAnKinhDoanh duAn:danhSachDuAnKinhDoanh){
-                        pw2.println(duAn);
-                    }
-                } catch (IOException ex) {}
-                finally{
-                    pw.close();
-                    pw2.close();
+                    System.out.println(sq);
+//                    if(danhSachGiaoDichCaNhan.size()>0){ 
+                    java.sql.ResultSet res=stt.executeQuery(sq);
+//                    }
+                }
+                catch(Exception ex){
                 }
             }
         });
@@ -88,31 +91,19 @@ public class App extends JFrame {
         vonDauTuTong = 0;
         dinhDangTienTe = new DecimalFormat("#,###.##");
         dinhDangNgay = new SimpleDateFormat("dd/MM/yyyy");
-        try {
-            Scanner cinf=new Scanner(new File("data/dataCaNhan/dataCaNhan.txt"));
-            while(cinf.hasNextLine()){
-                String moTa=cinf.nextLine();
-                double tien=cinf.nextDouble();cinf.nextLine();
-                String ngayStr=cinf.nextLine();
-                String danhMuc=cinf.nextLine();
-                String ghiChu=cinf.nextLine();
-                Date newNgay=fm.parse(ngayStr);
-                danhSachGiaoDichCaNhan.add(new GiaoDich(moTa,tien,newNgay,danhMuc,ghiChu));
+        db=new DBContext();
+        try{
+            conn=db.getConnection();
+            stt=conn.createStatement();
+            java.sql.ResultSet res=stt.executeQuery("select * from [giao dich]");
+            while(res.next()){
+                danhSachGiaoDichCaNhan.add(new GiaoDich(res.getString(1),
+                res.getDouble(2),
+                res.getDate(3),
+                res.getString(4),
+                res.getString(5)));
             }
-            cinf=new Scanner(new File("data/dataCaNhan/dataKinhDoanh.txt"));
-            while(cinf.hasNextLine()){
-                String name=cinf.nextLine();
-                double tien1=cinf.nextDouble(),tien2=cinf.nextDouble(),tien3=cinf.nextDouble();
-                if(cinf.hasNextLine()) cinf.nextLine();
-                danhSachDuAnKinhDoanh.add(new DuAnKinhDoanh(name,tien1,tien2,tien3));
-            }
-        }catch (FileNotFoundException ex) {
-            System.getLogger(App.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
-        }
-        catch (ParseException ex) {
-            System.getLogger(App.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
-        }
-        
+        }catch(Exception e){}
     }
 
     private void khoiTaoGiaoDien() {
@@ -576,6 +567,7 @@ public class App extends JFrame {
         JButton btnThemDuAn = (JButton) panelChucNangDuAn.getComponent(0);
         JButton btnThemVonDauTu = (JButton) panelChucNangDuAn.getComponent(1);
         JButton btnThemGiaoDichDuAn = (JButton) panelChucNangDuAn.getComponent(2);
+        JButton btnXemChiTiet = (JButton) panelChucNangDuAn.getComponent(3);
         JButton btnXoaDuAn = (JButton) panelChucNangDuAn.getComponent(4);
 
         // Sự kiện thêm thu nhập
@@ -631,9 +623,15 @@ public class App extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 themGiaoDichDuAn();
+                
             }
         });
-
+        btnXemChiTiet.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                xemChiTietDuAn();
+            }
+        });
         // Sự kiện xóa dự án
         btnXoaDuAn.addActionListener(new ActionListener() {
             @Override
@@ -1121,8 +1119,107 @@ public class App extends JFrame {
         // Cập nhật tab tổng quan
         tabbedPane.setComponentAt(0, taoPanelTongQuan());
     }
+    private JPanel taoPanelChiTietDuAn(DuAnKinhDoanh duAn) {
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.setBorder(BorderFactory.createTitledBorder("Chi tiết dự án: " + duAn.getTenDuAn()));
 
+        // Bảng giao dịch của dự án
+        String[] cotGiaoDich = {"STT", "Mô tả", "Số tiền", "Ngày", "Loại", "Ghi chú"};
+        DefaultTableModel model = new DefaultTableModel(cotGiaoDich, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+
+        JTable bangGiaoDich = new JTable(model);
+
+        // Đặt renderer để hiển thị màu cho cột loại
+        bangGiaoDich.getColumnModel().getColumn(4).setCellRenderer(new LoaiGiaoDichDuAnRenderer());
+
+        // CẬP NHẬT DANH SÁCH GIAO DỊCH NGAY KHI TẠO PANEL
+        int stt = 1;
+        for (GiaoDich gd : duAn.getDanhSachGiaoDich()) {
+            String loai = gd.getSoTien() > 0 ? "Thu nhập" : "Chi phí";
+            model.addRow(new Object[]{
+                stt++,
+                gd.getMoTa(),
+                dinhDangTienTe.format(Math.abs(gd.getSoTien())) + " VNĐ",
+                dinhDangNgay.format(gd.getNgay()),
+                loai,
+                gd.getGhiChu()
+            });
+        }
+
+        JScrollPane scrollPane = new JScrollPane(bangGiaoDich);
+
+        // Panel chức năng - CHỈ CẦN NÚT QUAY LẠI
+        JPanel panelChucNang = new JPanel(new FlowLayout());
+        JButton btnQuayLai = new JButton("← Quay lại");
+
+        panelChucNang.add(btnQuayLai);
+
+        // Thêm các component vào panel chính
+        panel.add(scrollPane, BorderLayout.CENTER);
+        panel.add(panelChucNang, BorderLayout.SOUTH);
+
+        // Sự kiện cho nút quay lại
+        btnQuayLai.addActionListener(e -> {
+            int tabIndex = tabbedPane.indexOfComponent(panel);
+            if (tabIndex != -1) {
+                tabbedPane.remove(tabIndex);
+            }
+        });
+
+        return panel;
+    }
+    private void xemChiTietDuAn() {
+        int selectedRow = bangDuAnKinhDoanh.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn dự án cần xem chi tiết!");
+            return;
+        }
+
+        DuAnKinhDoanh duAn = danhSachDuAnKinhDoanh.get(selectedRow);
+
+        // Tạo panel chi tiết dự án
+        JPanel panelChiTiet = taoPanelChiTietDuAn(duAn);
+
+        // Thêm tab mới
+        String tabName = "Chi tiết: " + duAn.getTenDuAn();
+        tabbedPane.addTab(tabName, panelChiTiet);
+
+        // Chuyển đến tab chi tiết
+        tabbedPane.setSelectedComponent(panelChiTiet);
+    }
+    // Renderer cho loại giao dịch dự án
+    class LoaiGiaoDichDuAnRenderer extends DefaultTableCellRenderer {
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value,
+                                                       boolean isSelected, boolean hasFocus, int row, int column) {
+            Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+
+            if (value != null && !isSelected) {
+                String loai = value.toString();
+                if ("Thu nhập".equals(loai)) {
+                    c.setBackground(new Color(144, 238, 144)); // Xanh lá nhạt
+                    c.setForeground(Color.BLACK);
+                } else if ("Chi phí".equals(loai)) {
+                    c.setBackground(new Color(255, 182, 193)); // Hồng nhạt
+                    c.setForeground(Color.BLACK);
+                }
+            }
+
+            if (isSelected) {
+                c.setBackground(table.getSelectionBackground());
+                c.setForeground(table.getSelectionForeground());
+            }
+
+            return c;
+        }
+    }
     public static void main(String[] args) {
+
         SwingUtilities.invokeLater(() -> {
             new App();
         });
