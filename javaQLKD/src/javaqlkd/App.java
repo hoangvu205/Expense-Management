@@ -103,6 +103,13 @@ public class App extends JFrame {
                 res.getString(4),
                 res.getString(5)));
             }
+            res=stt.executeQuery("select * from duAn");
+            while(res.next()){
+                danhSachDuAnKinhDoanh.add(new DuAnKinhDoanh(res.getString(1),
+                        res.getDouble(2),
+                        res.getDouble(3),
+                        res.getDouble(4)));
+            }
         }catch(Exception e){}
     }
 
@@ -472,7 +479,7 @@ public class App extends JFrame {
             double loiNhuan = duAn.tinhLoiNhuan();
             double tongSoSauLaiLo = vonDauTu + loiNhuan;
             double tyLeLoiNhuan = vonDauTu > 0 ? (loiNhuan / vonDauTu) * 100 : 0;
-
+            
             modelBangDuAnKinhDoanh.addRow(new Object[]{
                     duAn.getTenDuAn(),
                     dinhDangTienTe.format(vonDauTu) + " VNĐ",
@@ -1002,7 +1009,16 @@ public class App extends JFrame {
                     capNhatToanBoGiaoDien();
                     JOptionPane.showMessageDialog(this, "Thêm dự án thành công!");
                     nhapLieuThanhCong = true;
-
+                    String sq=String.format("insert into [duAn] values(N'%s',%f,%f,%f)",tenDuAn,vonDauTu,chiPhiDuKien,mucTieuLoiNhuan);
+                    stt.executeUpdate(sq);
+                    sq=String.format("create table [gd%s]("
+                            + "moTa nvarchar(100),"
+                            + "tien int,"
+                            + "ngay date,"
+                            + "danhMuc nvarchar(100),"
+                            + "ghiChu nvarchar(100),"
+                            + ")",tenDuAn);
+                    stt.executeUpdate(sq);
                 } catch (Exception ex) {
                     JOptionPane.showMessageDialog(this, "Dữ liệu nhập không hợp lệ! Vui lòng kiểm tra lại.",
                             "Lỗi nhập liệu", JOptionPane.ERROR_MESSAGE);
@@ -1069,7 +1085,11 @@ public class App extends JFrame {
                     }
 
                     duAn.themGiaoDich(moTa, soTien, ngay, ghiChu);
-                    System.out.println("check----------------------------------------------------");
+                    String sq=String.format("insert into [gd%s]\n"
+                            + "values(N'%s',%f,'%s',N'%s',N'%s')",
+                            duAn.getTenDuAn(),moTa,soTien,new java.sql.Date(ngay.getTime()),loai,ghiChu);
+                    System.out.println(sq);
+                    stt.executeUpdate(sq);
                     capNhatToanBoGiaoDien();
                     JOptionPane.showMessageDialog(this, "Thêm giao dịch dự án thành công!");
                     nhapLieuThanhCong = true;
@@ -1099,7 +1119,17 @@ public class App extends JFrame {
                 "Xác nhận xóa", JOptionPane.YES_NO_OPTION);
 
         if (confirm == JOptionPane.YES_OPTION) {
+            DuAnKinhDoanh tmp=danhSachDuAnKinhDoanh.get(selectedRow);
             danhSachDuAnKinhDoanh.remove(selectedRow);
+            String sq=String.format("drop table [gd%s]\n"
+                    + "delete from duAn\n"
+                    + "where name='%s'",
+                    tmp.getTenDuAn(),tmp.getTenDuAn());
+            System.out.println(sq);
+            try{
+                stt.executeUpdate(sq);
+            }catch(Exception e){
+            System.out.println("wth");}
             capNhatToanBoGiaoDien();
             JOptionPane.showMessageDialog(this, "Xóa dự án thành công!");
         }
@@ -1119,6 +1149,7 @@ public class App extends JFrame {
         // Cập nhật tab tổng quan
         tabbedPane.setComponentAt(0, taoPanelTongQuan());
     }
+    
     private JPanel taoPanelChiTietDuAn(DuAnKinhDoanh duAn) {
         JPanel panel = new JPanel(new BorderLayout());
         panel.setBorder(BorderFactory.createTitledBorder("Chi tiết dự án: " + duAn.getTenDuAn()));
@@ -1173,6 +1204,7 @@ public class App extends JFrame {
 
         return panel;
     }
+    
     private void xemChiTietDuAn() {
         int selectedRow = bangDuAnKinhDoanh.getSelectedRow();
         if (selectedRow == -1) {
@@ -1218,6 +1250,7 @@ public class App extends JFrame {
             return c;
         }
     }
+    
     public static void main(String[] args) {
 
         SwingUtilities.invokeLater(() -> {
