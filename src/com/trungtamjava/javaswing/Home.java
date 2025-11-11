@@ -391,7 +391,7 @@ public class Home extends javax.swing.JFrame {
                 model.addRow(new Object[]{
                     res.getString("loai"),
                     res.getString("moTa"),
-                    res.getDouble("soTien"),
+                    String.format("%.3f",res.getDouble("soTien")),
                     res.getDate("ngay").toLocalDate().format(fmt),
                     res.getString("ghiChu")});
             }

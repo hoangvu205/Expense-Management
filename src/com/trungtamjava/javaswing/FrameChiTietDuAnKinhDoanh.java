@@ -64,7 +64,6 @@ giaoDichTrongDuAn.setDefaultRenderer(Object.class, new javax.swing.table.Default
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jButton1 = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         giaoDichTrongDuAn = new javax.swing.JTable();
         btnThemGiaoDichDuAn = new javax.swing.JButton();
@@ -78,8 +77,6 @@ giaoDichTrongDuAn.setDefaultRenderer(Object.class, new javax.swing.table.Default
                 formWindowClosed(evt);
             }
         });
-
-        jButton1.setText("Lưu");
 
         giaoDichTrongDuAn.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -134,8 +131,7 @@ giaoDichTrongDuAn.setDefaultRenderer(Object.class, new javax.swing.table.Default
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jButton1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 344, Short.MAX_VALUE)
+                        .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(btnThemGiaoDichDuAn)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnXoaGd)
@@ -148,7 +144,6 @@ giaoDichTrongDuAn.setDefaultRenderer(Object.class, new javax.swing.table.Default
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
                     .addComponent(btnThemGiaoDichDuAn)
                     .addComponent(btnXoaGd)
                     .addComponent(btnSuaGiaoDich))
@@ -216,7 +211,6 @@ giaoDichTrongDuAn.setDefaultRenderer(Object.class, new javax.swing.table.Default
     private javax.swing.JButton btnThemGiaoDichDuAn;
     private javax.swing.JButton btnXoaGd;
     private javax.swing.JTable giaoDichTrongDuAn;
-    private javax.swing.JButton jButton1;
     private javax.swing.JScrollPane jScrollPane2;
     // End of variables declaration//GEN-END:variables
 }

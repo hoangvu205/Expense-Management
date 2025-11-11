@@ -1,5 +1,4 @@
 package com.trungtamjava.javaswing;
-
 import com.trungtamjava.javaswing.giaoDich;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -55,6 +54,16 @@ public class duAn {
     public void setVonDauTu(double vonDauTu) { this.vonDauTu = vonDauTu; }
     public double getMucTieuLoiNhuan() { return mucTieuLoiNhuan; }
     public double getChiPhiDuKien(){return chiPhiDuKien;}
+    public void setTenDuAn(String tenDuAn){this.tenDuAn=tenDuAn;}
+    public void setMucTieuLoiNhuan(){
+        this.mucTieuLoiNhuan=mucTieuLoiNhuan;
+    }
+    public void setChiPhiDuKien(double chiPhiDuKien){
+        this.chiPhiDuKien=chiPhiDuKien;
+    }
+    public void setMucTieuLoiNhuan(double mucTieuLoiNhuan){
+        this.mucTieuLoiNhuan=mucTieuLoiNhuan;
+    }
     public ArrayList<giaoDich> getDanhSachgiaoDich() { return danhSachgiaoDich; }
 }
 

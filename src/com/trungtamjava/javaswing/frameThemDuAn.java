@@ -8,15 +8,31 @@ public class frameThemDuAn extends javax.swing.JFrame {
     PanelDuAnKinhDoanh root;
     ArrayList<duAn> data;
     private String tenDuAn;
-    private double vonDauTu,chiPhi,mucTieuLoiNhuan;
+    private double vonDauTu,chiPhiDuKien,mucTieuLoiNhuan;
+    int check;
+    int row;
+    duAn tmp;
     public frameThemDuAn(PanelDuAnKinhDoanh a) {
         root=a;
         this.data=a.data;
         initComponents();
+        check=1;
         getRootPane().setDefaultButton(btnOK);
         setLocationRelativeTo(null);
     }
-
+    public frameThemDuAn(PanelDuAnKinhDoanh a,int rowPick){
+        root=a;
+        this.data=a.data;
+        initComponents();
+        check=2;
+        tmp=data.get(rowPick);
+        txtTenDuAn.setText(tmp.getTenDuAn());
+        txtChiPhiDuKien.setText(String.valueOf(tmp.getChiPhiDuKien()));
+        txtVonDauTu.setText(String.valueOf(tmp.getVonDauTu()));
+        txtMucTieuLoiNhuan.setText(String.valueOf(tmp.getMucTieuLoiNhuan()));
+        getRootPane().setDefaultButton(btnOK);
+        setLocationRelativeTo(null);
+    }
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -47,14 +63,6 @@ public class frameThemDuAn extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jLabel6.setText("Tên dự án");
-
-        txtTenDuAn.setText("Tên");
-
-        txtVonDauTu.setText("0");
-
-        txtChiPhiDuKien.setText("0");
-
-        txtMucTieuLoiNhuan.setText("0");
 
         jLabel7.setText("Vốn đầu tư");
 
@@ -128,10 +136,21 @@ public class frameThemDuAn extends javax.swing.JFrame {
 
     private void btnOKActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOKActionPerformed
         try{
-            capNhatDuLieu();
-            data.add(new duAn(tenDuAn,vonDauTu,chiPhi,mucTieuLoiNhuan));
-            root.capNhanAllBang();
-            dispose();
+            if(check==1){
+                capNhatDuLieu();
+                data.add(new duAn(tenDuAn,vonDauTu,chiPhiDuKien,mucTieuLoiNhuan));
+                root.capNhanAllBang();
+                dispose();
+            }
+            else if(check==2){
+                capNhatDuLieu();
+                tmp.setTenDuAn(tenDuAn);
+                tmp.setVonDauTu(vonDauTu);
+                tmp.setChiPhiDuKien(chiPhiDuKien);
+                tmp.setMucTieuLoiNhuan(mucTieuLoiNhuan);
+                root.capNhanAllBang();
+                dispose();
+            }
         }catch(Exception e){
             JOptionPane.showMessageDialog(this, "Vui lòng nhập chính xác thông tin!");
         }
@@ -139,7 +158,7 @@ public class frameThemDuAn extends javax.swing.JFrame {
     private void capNhatDuLieu(){
         this.tenDuAn=txtTenDuAn.getText();
         this.vonDauTu=Double.parseDouble(txtVonDauTu.getText());
-        this.chiPhi=Double.parseDouble(txtChiPhiDuKien.getText());
+        this.chiPhiDuKien=Double.parseDouble(txtChiPhiDuKien.getText());
         this.mucTieuLoiNhuan=Double.parseDouble(txtMucTieuLoiNhuan.getText());
     }
     public static void main(String args[]) {

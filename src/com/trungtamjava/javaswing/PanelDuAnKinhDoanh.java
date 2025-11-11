@@ -35,7 +35,6 @@ public class PanelDuAnKinhDoanh extends javax.swing.JFrame {
         btnXoaDuAn = new javax.swing.JButton();
         btnSuaDuAn = new javax.swing.JButton();
         btnXemChiTiet = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Dự Án Kinh Doanh");
@@ -105,6 +104,11 @@ public class PanelDuAnKinhDoanh extends javax.swing.JFrame {
         });
 
         btnSuaDuAn.setText("Sửa dự án");
+        btnSuaDuAn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSuaDuAnActionPerformed(evt);
+            }
+        });
 
         btnXemChiTiet.setText("Xem chi tiết dự án");
         btnXemChiTiet.addActionListener(new java.awt.event.ActionListener() {
@@ -113,15 +117,12 @@ public class PanelDuAnKinhDoanh extends javax.swing.JFrame {
             }
         });
 
-        jButton1.setText("Lưu");
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jButton1)
-                .addGap(35, 35, 35)
+                .addGap(107, 107, 107)
                 .addComponent(jTabbedPane4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
@@ -147,10 +148,8 @@ public class PanelDuAnKinhDoanh extends javax.swing.JFrame {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jTabbedPane4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton1))
-                .addGap(12, 12, 12)
+                .addComponent(jTabbedPane4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(34, 34, 34)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnThemDuAn)
                     .addComponent(btnThemVon)
@@ -178,9 +177,8 @@ public class PanelDuAnKinhDoanh extends javax.swing.JFrame {
             javax.swing.JOptionPane.showMessageDialog(this, "Vui lòng chọn một dự án!");
             return;
         }
-        else{
-           new FrameChiTietDuAnKinhDoanh(data.get(row).getDanhSachgiaoDich(),this).setVisible(true);
-        }
+        new FrameChiTietDuAnKinhDoanh(data.get(row).getDanhSachgiaoDich(),this).setVisible(true);
+        
     }//GEN-LAST:event_btnXemChiTietActionPerformed
 
     private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
@@ -210,6 +208,11 @@ public class PanelDuAnKinhDoanh extends javax.swing.JFrame {
         }
         new themVonDauTu(this, row).setVisible(true);        
     }//GEN-LAST:event_btnThemVonActionPerformed
+
+    private void btnSuaDuAnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSuaDuAnActionPerformed
+        int row=bangDuAn.getSelectedRow();
+        new frameThemDuAn(this,row).setVisible(true);
+    }//GEN-LAST:event_btnSuaDuAnActionPerformed
     
     public void capNhanAllBang(){
         DefaultTableModel model=(DefaultTableModel) bangDuAn.getModel();
@@ -278,7 +281,6 @@ public class PanelDuAnKinhDoanh extends javax.swing.JFrame {
     private javax.swing.JButton btnThemVon;
     private javax.swing.JButton btnXemChiTiet;
     private javax.swing.JButton btnXoaDuAn;
-    private javax.swing.JButton jButton1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTabbedPane jTabbedPane4;
     // End of variables declaration//GEN-END:variables
